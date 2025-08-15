@@ -96,10 +96,7 @@ const DoctorsList = () => {
   const handleDoctorSelect = (doctorId: string) => {
 
     localStorage.setItem("selectedDoctorId", doctorId);
-    // navigate(`/patient/doctor/${doctorId}/calendar`);
-    // navigate(`doctor/${doctorId}/calendar`);
-    //  navigate(`/patient/dashboard/${patientId}/doctor/${doctorId}/calendar`);
- navigate(`/${role}/dashboard/${patientId}/doctor/${doctorId}/calendar`);
+    navigate(`/${role}/dashboard/${patientId}/doctor/${doctorId}/calendar`);
   };
 
   if (loading) return <p>Loading doctors...</p>;

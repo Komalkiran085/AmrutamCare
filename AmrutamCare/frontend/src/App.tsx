@@ -4,19 +4,11 @@ import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
-   <Router>
+    <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/doctor/login" element={<LoginPage role="doctor" />} />
         <Route path="/patient/login" element={<LoginPage role="patient" />} />
-
-        {/* Patient Calendar route */}
-        {/* <Route
-          path="/patient/doctor/:doctorId/calendar"
-          element={<PatientDoctorCalendar />}
-        /> */}
-
-        {/* Protected dashboard routes */}
         <Route
           path="/:role/dashboard/:id"
           element={
@@ -31,7 +23,6 @@ function App() {
 
         </Route>
 
-        {/* Catch-all should be LAST */}
         <Route path="*" element={<LandingPage />} />
       </Routes>
     </Router>

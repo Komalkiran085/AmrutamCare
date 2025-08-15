@@ -3,7 +3,7 @@ import DoctorAvailability from "../models/DoctorAvailability.js";
 
 const router = express.Router();
 
-// Save or update doctor's available dates
+// Save or update doctor's available dates (manual update, optional)
 router.post("/:doctorId", async (req, res) => {
   const { doctorId } = req.params;
   const { availableDates } = req.body;

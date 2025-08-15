@@ -47,14 +47,11 @@ const Dashboard = () => {
             </button>
           </div>
         </header>
-         
-
         <main className="flex justify-center items-center min-h-[60vh]">
-          {role === "doctor"&& id ? (
+          {role === "doctor" && id ? (
             <DoctorCalendar doctorId={id} /> // <-- doctor sees calendar here
           ) : (
             <>
-             
               <Outlet />
             </>
           )}
