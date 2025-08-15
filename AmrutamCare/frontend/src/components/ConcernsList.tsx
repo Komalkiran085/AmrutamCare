@@ -7,10 +7,6 @@ interface Concern {
   concern: string;
 }
 
-// interface ConcernsListProps {
-//   role: string;
-// }
-
 const ConcernsList = () => {
   const [concerns, setConcerns] = useState<Concern[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +39,10 @@ const ConcernsList = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[60vh]">
+    <div className="flex flex-col justify-center items-center min-h-[60vh]">
+      <h2 className="text-lg font-semibold mb-4">
+                Please select your Health Concern
+              </h2>
       <div className="flex flex-col gap-4 w-full max-w-xs">
         {concerns.map((item) => (
           <button

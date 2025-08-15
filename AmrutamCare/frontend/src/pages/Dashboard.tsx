@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useParams, useNavigate, Outlet } from "react-router-dom";
+import DoctorCalendar from "../components/DoctorCalender";
 
 const Dashboard = () => {
   const { role, id } = useParams();
@@ -46,12 +47,17 @@ const Dashboard = () => {
             </button>
           </div>
         </header>
+         
 
-        <main>
-          <h2 className="text-lg font-semibold">Please select your Health Concern</h2>
-          {role === "patient" &&
-            <Outlet />
-          }
+        <main className="flex justify-center items-center min-h-[60vh]">
+          {role === "doctor"&& id ? (
+            <DoctorCalendar doctorId={id} /> // <-- doctor sees calendar here
+          ) : (
+            <>
+             
+              <Outlet />
+            </>
+          )}
         </main>
       </div>
     </div>

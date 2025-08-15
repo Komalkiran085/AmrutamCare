@@ -7,6 +7,7 @@ import doctorRoutes from "./routes/doctorRoutes.js";
 import concernRoutes from "./routes/concernRoutes.js";
 import doctorConcernMapRoutes from "./routes/doctorConcernMapRoutes.js";
 import patientRoutes from "./routes/patientRoutes.js";
+import doctorAvailabilityRoutes from "./routes/doctorAvailabilityRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import simulationRoutes from "./routes/simulationRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
@@ -29,7 +30,7 @@ app.use("/api/concerns", concernRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/simulations", simulationRoutes);
 app.use("/api/mappings", doctorConcernMapRoutes);
-
+app.use("/api/availability", doctorAvailabilityRoutes);
 
 // Error handler
 app.use(errorHandler);
