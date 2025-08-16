@@ -28,17 +28,18 @@ router.post("/", async (req, res) => {
   }
 });
 
-/**
- * Get all bookings for a patient
- * GET /api/bookings/:patientId
- */
-router.get("/:patientId", async (req, res) => {
+
+// Get all bookings for a doctor on a given date
+router.get("/doctor/:doctorId/:date", async (req, res) => {
   try {
-    const bookings = await Booking.find({ patientId: req.params.patientId });
+    const { doctorId, date } = req.params;
+    const bookings = await Booking.find({ doctorId, date });
     res.json(bookings);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
+
 
 export default router;

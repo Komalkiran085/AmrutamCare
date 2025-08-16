@@ -3,12 +3,11 @@ import dotenv from "dotenv";
 import fs from "fs";
 import csv from "csv-parser";
 
-import Driver from "./models/Driver.js";
 import Doctor from "./models/Doctor.js";
 import Concern from "./models/Concern.js";
 import Patient from "./models/Patient.js";
-import Order from "./models/Order.js";
 import connectDB from "./config/db.js";
+import Admin from "./models/Admin.js";
 
 dotenv.config();
 await connectDB();
@@ -16,27 +15,8 @@ await connectDB();
 const importData = async () => {
   try {
     // Clear existing data
-    await Driver.deleteMany();
-    await Order.deleteMany();
-
-    // Seed drivers
-    const drivers = [];
-    await new Promise((resolve) => {
-      fs.createReadStream("./data/drivers.csv")
-        .pipe(csv())
-        .on("data", (row) => {
-          drivers.push({
-            name: row.name,
-            currentShiftHours: Number(row.shift_hours),
-            pastWeekHours: row.past_week_hours.split("|").map(Number)
-          });
-        })
-        .on("end", async () => {
-          await Driver.insertMany(drivers);
-          console.log(`✅ Imported ${drivers.length} drivers`);
-          resolve();
-        });
-    });
+  
+    await Admin.deleteMany();
 
 
     // Seed patients
@@ -96,27 +76,25 @@ const importData = async () => {
           resolve();
         });
     });
-
-
-    // Seed orders
-    const orders = [];
+    // Seed admin
+    const admin = [];
     await new Promise((resolve) => {
-      fs.createReadStream("./data/orders.csv")
+      fs.createReadStream("./data/admin.csv")
         .pipe(csv())
         .on("data", (row) => {
-          orders.push({
-            orderId: Number(row.order_id),
-            valueRs: Number(row.value_rs),
-            routeId: Number(row.route_id),
-            deliveryTime: row.delivery_time
+          admin.push({
+            adminId: row.adminId,
+            username: row.username,
           });
         })
         .on("end", async () => {
-          await Order.insertMany(orders);
-          console.log(`✅ Imported ${orders.length} orders`);
+          await Admin.deleteMany({});
+          await Admin.insertMany(admin);
+          console.log(`✅ Imported ${admin.length} admin`);
           resolve();
         });
     });
+
 
     console.log("🎯 All data imported successfully!");
     process.exit();

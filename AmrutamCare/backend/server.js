@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
-import driverRoutes from "./routes/driverRoutes.js";
 import doctorRoutes from "./routes/doctorRoutes.js";
 import concernRoutes from "./routes/concernRoutes.js";
 import doctorConcernMapRoutes from "./routes/doctorConcernMapRoutes.js";
@@ -10,7 +9,7 @@ import patientRoutes from "./routes/patientRoutes.js";
 import doctorAvailabilityRoutes from "./routes/doctorAvailabilityRoutes.js";
 import doctorDaySlotsRoutes from "./routes/doctorDaySlotsRoutes.js"
 import bookingRoutes from "./routes/bookingRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import simulationRoutes from "./routes/simulationRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 
@@ -25,11 +24,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 // Routes
-app.use("/api/drivers", driverRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/concerns", concernRoutes);
-app.use("/api/orders", orderRoutes);
+
 app.use("/api/simulations", simulationRoutes);
 app.use("/api/mappings", doctorConcernMapRoutes);
 app.use("/api/availability", doctorAvailabilityRoutes);
@@ -38,6 +36,8 @@ app.use("/api/day-slots", doctorDaySlotsRoutes);
 
 // ...
 app.use("/api/bookings", bookingRoutes);
+
+app.use("/api/admins", adminRoutes);
 
 // Error handler
 app.use(errorHandler);
