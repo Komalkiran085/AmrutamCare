@@ -1,0 +1,43 @@
+/* Booked dates */
+.booked-tile {
+  background-color: #e5e7eb !important; /* Tailwind gray-200 */
+  color: #9ca3af !important; /* Tailwind gray-400 */
+  border-radius: 8px;
+  cursor: not-allowed;
+  font-size: 0.9rem;
+
+}
+
+/* Available dates (normal state) */
+.available-tile {
+  background-color: #ffffff;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  /* padding: 20px; */
+
+}
+
+.available-tile:hover {
+  background-color: #bbf7d0 !important; /* Tailwind green-100 */
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Selected date highlight */
+.highlight-tile {
+  background-color: #3a643b !important; /* dark green */
+  color: white !important;
+  border-radius: 50% !important;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.react-calendar {
+  width: 450px;   /* increase width */
+  height: 450px;  /* increase height */
+  font-size: 1.2rem; /* scale up text */
+}
+
+.react-calendar__tile {
+  padding: 20px 10px; /* enlarge each day tile */
+}

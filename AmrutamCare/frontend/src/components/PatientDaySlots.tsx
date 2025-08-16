@@ -10,13 +10,19 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
   const [doctorSlots, setDoctorSlots] = useState<number[]>([]);
   const [bookedSlot, setBookedSlot] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  // Dialog state
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [dialogType, setDialogType] = useState<"info" | "confirm" | "error">("info");
+  const [pendingHour, setPendingHour] = useState<number | null>(null);
+
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const API_BASE = "http://localhost:5000/api/day-slots";
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 10);
 
-    // Fetch existing slots for this date
     const ymd = date.toISOString().split("T")[0];
     fetch(`${API_BASE}/${doctorId}/${ymd}`)
       .then((res) => res.json())
@@ -28,22 +34,41 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
 
   const handleSlotClick = (hour: number) => {
     if (doctorSlots.includes(hour)) {
-      alert("This slot is already taken by doctor");
+      setDialogMessage("This slot is already taken by the doctor.");
+      setDialogType("error");
+      setDialogVisible(true);
       return;
     }
 
-    const confirmBooking = window.confirm(
-      `Do you wish to book ${hour.toString().padStart(2, "0")}:00 for appointment?`
-    );
-    if (confirmBooking) {
-      setBookedSlot(hour);
-      // Optionally, POST booking to backend
-      fetch(`${API_BASE}/book/${doctorId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date: date.toISOString(), hour }),
-      }).catch((err) => console.error("Error booking slot:", err));
-    }
+    setPendingHour(hour);
+    setDialogMessage(`Do you wish to book ${hour.toString().padStart(2, "0")}:00 for appointment?`);
+    setDialogType("confirm");
+    setDialogVisible(true);
+  };
+
+  const confirmBooking = () => {
+    if (!pendingHour) return;
+
+    setBookedSlot(pendingHour);
+
+    fetch(`${API_BASE}/book/${doctorId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date: date.toISOString(), hour: pendingHour }),
+    })
+      .then(() => {
+        setDialogMessage(`🎉 Appointment booked successfully at ${pendingHour}:00.`);
+        setDialogType("info");
+        setDialogVisible(true);
+      })
+      .catch(() => {
+        setDialogMessage("⚠️ Error booking slot. Please try again.");
+        setDialogType("error");
+        setDialogVisible(true);
+        setBookedSlot(null);
+      });
+
+    setPendingHour(null);
   };
 
   const handleClose = () => {
@@ -69,13 +94,13 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
             onClick={() => handleSlotClick(hour)}
             className={`p-3 rounded-xl text-sm border transition-colors
               ${doctorSlots.includes(hour)
-                ? "bg-red-600 text-white cursor-not-allowed"
+                ? "bg-amber-600 text-white cursor-not-allowed"
                 : bookedSlot === hour
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 hover:bg-gray-200"}`}
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-100 hover:bg-gray-200"}`}
           >
             {hour.toString().padStart(2, "0")}:00
-            {bookedSlot === hour && " ✅"}
+            {bookedSlot === hour}
           </button>
         ))}
       </div>
@@ -89,6 +114,46 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
           Close
         </button>
       </div>
+
+      {/* Custom Dialog */}
+      {dialogVisible && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div
+            className={`bg-white p-6 rounded-lg shadow-xl w-[300px] text-center transform transition-all duration-300 ease-out
+        ${dialogVisible ? "scale-100 opacity-100" : "scale-90 opacity-0"}`}
+          >
+            <p className="mb-4 text-gray-800">{dialogMessage}</p>
+            <div className="flex justify-center gap-3">
+              {dialogType === "confirm" ? (
+                <>
+                  <button
+                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                    onClick={() => {
+                      setDialogVisible(false);
+                      confirmBooking();
+                    }}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 transition"
+                    onClick={() => setDialogVisible(false)}
+                  >
+                    No
+                  </button>
+                </>
+              ) : (
+                <button
+                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                  onClick={() => setDialogVisible(false)}
+                >
+                  OK
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
