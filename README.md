@@ -62,6 +62,9 @@ The goal is to build a platform for an Ayurvedic doctor consultation platform, c
 
 <img width="1909" height="957" alt="Screenshot 2025-08-17 184152" src="https://github.com/user-attachments/assets/df4a659d-39d9-48d4-a98f-d1246388c3bd" />
 
+## 🚀 Getting Started
 
+### 1️⃣ Clone the repo
+```bash
 git clone https://github.com/Komalkiran085/AmrutamCare.git
 cd AmrutamCare
