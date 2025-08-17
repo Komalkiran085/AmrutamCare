@@ -38,7 +38,8 @@ The goal is to build a platform for an Ayurvedic doctor consultation platform, c
 
 ### Screenshots
 
----
+<img width="1902" height="943" alt="Screenshot 2025-08-17 183653" src="https://github.com/user-attachments/assets/25f39aac-150e-444f-8f33-fc6ca076872f" />
+
 
 ## 🚀 Getting Started
 
