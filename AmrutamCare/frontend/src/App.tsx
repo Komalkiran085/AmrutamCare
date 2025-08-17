@@ -9,6 +9,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/doctor/login" element={<LoginPage role="doctor" />} />
         <Route path="/patient/login" element={<LoginPage role="patient" />} />
+        <Route path="/admin/login" element={<LoginPage role="admin" />} />
         <Route
           path="/:role/dashboard/:id"
           element={
@@ -22,6 +23,7 @@ function App() {
           <Route path="doctor/:doctorId/calendar" element={<PatientDoctorCalendar />} />
 
         </Route>
+
 
         <Route path="*" element={<LandingPage />} />
       </Routes>

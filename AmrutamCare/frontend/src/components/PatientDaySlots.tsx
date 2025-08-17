@@ -24,17 +24,19 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
     setTimeout(() => setIsVisible(true), 10);
 
     const ymd = date.toISOString().split("T")[0];
-    fetch(`${API_BASE}/${doctorId}/${ymd}`)
+    fetch(`http://localhost:5000/api/bookings/doctor/${doctorId}/${ymd}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data?.slots) setDoctorSlots(data.slots);
+        if (Array.isArray(data)) {
+          setDoctorSlots(data.map((b: any) => b.hour)); // booked hours
+        }
       })
       .catch((err) => console.error("Error fetching slots:", err));
   }, [date, doctorId]);
 
   const handleSlotClick = (hour: number) => {
     if (doctorSlots.includes(hour)) {
-      setDialogMessage("This slot is already taken by the doctor.");
+      setDialogMessage("This slot is already Booked.");
       setDialogType("error");
       setDialogVisible(true);
       return;
@@ -47,22 +49,36 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
   };
 
   const confirmBooking = () => {
-    if (!pendingHour) return;
+    if (pendingHour === null) return;
 
     setBookedSlot(pendingHour);
 
-    fetch(`${API_BASE}/book/${doctorId}`, {
+    fetch("http://localhost:5000/api/bookings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date: date.toISOString(), hour: pendingHour }),
+      body: JSON.stringify({
+        patientId: "P001", // TODO: replace with logged-in patient's ID
+        doctorId,
+        date: date.toISOString().split("T")[0], // only YYYY-MM-DD
+        hour: pendingHour,
+      }),
     })
-      .then(() => {
-        setDialogMessage(`🎉 Appointment booked successfully at ${pendingHour}:00.`);
+      .then(async (res) => {
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || "Error booking slot");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setDialogMessage(
+          `🎉 Appointment booked successfully at ${pendingHour}:00.`
+        );
         setDialogType("info");
         setDialogVisible(true);
       })
-      .catch(() => {
-        setDialogMessage("⚠️ Error booking slot. Please try again.");
+      .catch((err) => {
+        setDialogMessage(`⚠️ ${err.message}`);
         setDialogType("error");
         setDialogVisible(true);
         setBookedSlot(null);
@@ -70,6 +86,7 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
 
     setPendingHour(null);
   };
+
 
   const handleClose = () => {
     setIsVisible(false);
@@ -127,7 +144,9 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
               {dialogType === "confirm" ? (
                 <>
                   <button
-                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                    style={{ backgroundColor: "#3a643b" }}
+
+                    className="text-white px-3 py-1 rounded hover:bg-green-700 transition"
                     onClick={() => {
                       setDialogVisible(false);
                       confirmBooking();
@@ -144,7 +163,9 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
                 </>
               ) : (
                 <button
-                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                  style={{ backgroundColor: "#3a643b" }}
+
+                  className=" text-white px-3 py-1 rounded hover:bg-blue-700 transition"
                   onClick={() => setDialogVisible(false)}
                 >
                   OK

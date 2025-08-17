@@ -1,11 +1,9 @@
-// src/pages/LoginPage.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface LoginPageProps {
-  role: 'doctor' | 'patient';
+  role: "doctor" | "patient" | "admin";
 }
-
 
 const LoginPage = ({ role }: LoginPageProps) => {
   const [id, setId] = useState('');
@@ -14,55 +12,63 @@ const LoginPage = ({ role }: LoginPageProps) => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const endpoint =
-      role === 'doctor'
-        ? 'http://localhost:5000/api/doctors/login'
-        : 'http://localhost:5000/api/patients/login';
+    try {
+      let endpoint = "";
+      let payload: Record<string, string> = {};
 
-    const payload =
-      role === 'doctor'
-        ? { doctorId: id, username }
-        : { patientId: id, username };
+      if (role === "doctor") {
+        endpoint = "http://localhost:5000/api/doctors/login";
+        payload = { doctorId: id, username };
+      } else if (role === "patient") {
+        endpoint = "http://localhost:5000/api/patients/login";
+        payload = { patientId: id, username };
+      } else if (role === "admin") {
+        endpoint = "http://localhost:5000/api/admins/login";
+        payload = { adminId: id, username };
+      }
 
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('username', username);
-
-      navigate(`/${role}/dashboard/${id}`);
-    } else {
-      setMessage(data.message || 'Login failed');
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("username", username);
+        navigate(`/${role}/dashboard/${id}`);
+      } else {
+        setMessage(data.message || "Login failed");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("Server error");
     }
-  } catch (err) {
-    console.error(err);
-    setMessage('Server error');
-  }
-};
-
+  };
 
   return (
-    <div style={{ backgroundColor: "#fff7e2" }} className="flex flex-col items-center justify-center h-screen">
-      <h2  className="text-xl text-green-900 mb-140 absolute font-semibold mb-4">
-        {/* {role === 'doctor' ? 'Doctor Login' : 'Patient Login'} */}
+    <div
+      style={{ backgroundColor: "#fff7e2" }}
+      className="flex flex-col items-center justify-center h-screen"
+    >
+      <h2 className="text-xl text-green-900 font-semibold mb-4">
         AmrutamCare
       </h2>
       <form
-      style={{ backgroundColor: "#eeab42" }}
+        style={{ backgroundColor: "#eeab42" }}
         onSubmit={handleSubmit}
-        className=" p-6 rounded shadow-md w-80"
+        className="p-6 rounded shadow-md w-80"
       >
         <label className="block mb-2 text-green-900 text-sm font-medium">
-          {role === 'doctor' ? 'Doctor ID' : 'Patient ID'}
+          {role === 'doctor'
+            ? 'Doctor ID'
+            : role === 'patient'
+            ? 'Patient ID'
+            : 'Admin ID'}
         </label>
         <input
           type="text"
@@ -86,17 +92,15 @@ const LoginPage = ({ role }: LoginPageProps) => {
         />
 
         <button
-        style={{ backgroundColor: "#3a643b" }}
+          style={{ backgroundColor: "#3a643b" }}
           type="submit"
-          className=" text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
+          className="text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
         >
           Login
         </button>
 
         {message && (
-          <p className="mt-4 text-center text-sm text-gray-700">
-            {message}
-          </p>
+          <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
         )}
       </form>
     </div>

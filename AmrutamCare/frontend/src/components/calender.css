@@ -23,15 +23,6 @@
   cursor: pointer;
 }
 
-/* Selected date highlight */
-.highlight-tile {
-  background-color: #3a643b !important; /* dark green */
-  color: white !important;
-  border-radius: 50% !important;
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
 .react-calendar {
   width: 450px;   /* increase width */
   height: 450px;  /* increase height */
@@ -40,4 +31,9 @@
 
 .react-calendar__tile {
   padding: 20px 10px; /* enlarge each day tile */
+}
+
+.react-calendar__tile--active{
+  color: black !important;
+  background: white !important;
 }

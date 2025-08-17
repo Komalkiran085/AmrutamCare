@@ -12,17 +12,22 @@ router.post('/map-doctors', async (req, res) => {
     const doctors = await Doctor.find({});
     const concerns = await Concern.find({});
     let doctorIndex = 0;
-    const mapping = [];
 
-    concerns.forEach(concern => {
-      const assignedDoctors = doctors.slice(doctorIndex, doctorIndex + 2);
-      mapping.push({
-        concernId: concern.concernId,
-        concern: concern.concern,
-        doctors: assignedDoctors
-      });
-      doctorIndex += 2;
-    });
+    // Initialize mapping with empty doctor arrays
+    const mapping = concerns.map(concern => ({
+      concernId: concern.concernId,
+      concern: concern.concern,
+      doctors: []
+    }));
+
+    // Round-robin assignment of doctors
+    while (doctorIndex < doctors.length) {
+      for (let i = 0; i < concerns.length && doctorIndex < doctors.length; i++) {
+        const assignedDoctors = doctors.slice(doctorIndex, doctorIndex + 2);
+        mapping[i].doctors.push(...assignedDoctors);
+        doctorIndex += 2;
+      }
+    }
 
     await DoctorConcernMap.deleteMany({});
     await DoctorConcernMap.insertMany(mapping);
@@ -32,6 +37,7 @@ router.post('/map-doctors', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Get doctors for a concern
 router.get('/:concernId/doctors', async (req, res) => {

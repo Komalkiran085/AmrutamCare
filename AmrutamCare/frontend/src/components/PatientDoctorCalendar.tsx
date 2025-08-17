@@ -9,7 +9,9 @@ const PatientDoctorCalendar = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl flex justify-center font-bold mb-4">Doctor's Available Dates</h1>
+      <h1 className="text-xl flex justify-center font-bold mb-4" 
+      style={{ color: "#eeab42" }}
+      >Doctor's Available Dates</h1>
       {resolvedId ? (
         <DoctorCalendar doctorId={resolvedId} />
       ) : (
