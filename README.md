@@ -1,7 +1,7 @@
 # 🌿 AmrutamCare – Ayurvedic Consultation Platform
 
-This is the **Amrutam Full Stack Developer Assignment** project.  
-The goal is to build a **modular MVP** for an Ayurvedic doctor consultation platform, covering flows like doctor discovery, slot booking, and appointment management.  
+This is the **Full Stack Modular MVP** project.  
+The goal is to build a platform for an Ayurvedic doctor consultation platform, covering flows like doctor discovery, slot booking, and appointment management.  
 
 ---
 
@@ -36,9 +36,7 @@ The goal is to build a **modular MVP** for an Ayurvedic doctor consultation plat
 - **MongoDB (Mongoose)** for persistence
 - **JWT Authentication**
 
-### Deployment
-- Vercel (Frontend)
-- Render/Heroku (Backend)
+### Screenshots
 
 ---
 
