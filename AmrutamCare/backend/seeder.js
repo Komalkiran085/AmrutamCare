@@ -67,6 +67,7 @@ const importData = async () => {
           doctors.push({
             doctorId: row.doctorId,
             username: row.username,
+            concernId: Number(row.concernId),
           });
         })
         .on("end", async () => {

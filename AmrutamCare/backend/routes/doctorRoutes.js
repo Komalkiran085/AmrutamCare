@@ -11,11 +11,9 @@ import Concern from '../models/Concern.js';
 const router = express.Router();
 
 // Create new doctor (Admin only)
-// Create new doctor (Admin only)
-// Create new doctor (Admin only)
 router.post("/", protectAdmin, async (req, res) => {
-  try {
-    const { doctorId, username } = req.body;
+  try { 
+    const { doctorId, username, concernId } = req.body;
 
     if (!doctorId || !username) {
       return res.status(400).json({ message: "Doctor ID and username are required" });
@@ -28,22 +26,14 @@ router.post("/", protectAdmin, async (req, res) => {
     }
 
     // create doctor
-    const newDoctor = await Doctor.create({ doctorId, username });
+    const newDoctor = await Doctor.create({ doctorId, username, concernId });
 
     // ✅ Get all concerns sorted
-    const concerns = await Concern.find({}).sort({ concernId: 1 });
-    if (concerns.length === 0) {
-      return res.status(400).json({ message: "No concerns available" });
-    }
-
-    // ✅ Count how many doctors are already mapped across all concerns
-    const allMaps = await DoctorConcernMap.find({});
-    const totalDoctorsMapped = allMaps.reduce((sum, map) => sum + map.doctors.length, 0);
-
-    // ✅ Round-robin assignment (2 per concern)
-    const nextConcernIndex = Math.floor(totalDoctorsMapped / 2) % concerns.length;
-    const concernToAssign = concerns[nextConcernIndex];
-
+    const concerns = await Concern.find({concernId});
+    
+    
+    const concernToAssign = concerns[0];
+    
     // ✅ Update mapping
     let concernMap = await DoctorConcernMap.findOne({ concernId: concernToAssign.concernId });
     if (concernMap) {
