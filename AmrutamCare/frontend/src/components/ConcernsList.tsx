@@ -14,7 +14,7 @@ const ConcernsList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/concerns")
+    fetch(`${import.meta.env.VITE_API_URL}/api/concerns`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch concerns");

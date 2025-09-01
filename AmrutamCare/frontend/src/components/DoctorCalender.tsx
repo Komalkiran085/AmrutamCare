@@ -9,10 +9,8 @@ import "./calender.css"
 const DoctorCalendar = ({ doctorId }: { doctorId: string }) => {
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
-  const API_BASE = "http://localhost:5000/api/availability";
+  const API_BASE = `${import.meta.env.VITE_API_URL}/api/availability`;
   const { role } = useParams();
-
-  const formatDate = (date: Date) => date.toISOString().split("T")[0];
 
   useEffect(() => {
     fetch(`${API_BASE}/${doctorId}`)

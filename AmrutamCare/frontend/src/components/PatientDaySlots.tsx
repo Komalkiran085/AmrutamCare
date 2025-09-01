@@ -16,15 +16,14 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogType, setDialogType] = useState<"info" | "confirm" | "error">("info");
   const [pendingHour, setPendingHour] = useState<number | null>(null);
-
-  const hours = Array.from({ length: 24 }, (_, i) => i);
-  const API_BASE = "http://localhost:5000/api/day-slots";
+ const hours = Array.from({ length: 10 }, (_, i) => i + 9);
+  const API_BASE = `${import.meta.env.VITE_API_URL}/api/day-slots`;
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 10);
 
     const ymd = date.toISOString().split("T")[0];
-    fetch(`http://localhost:5000/api/bookings/doctor/${doctorId}/${ymd}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/bookings/doctor/${doctorId}/${ymd}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -53,7 +52,7 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
 
     setBookedSlot(pendingHour);
 
-    fetch("http://localhost:5000/api/bookings", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/bookings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

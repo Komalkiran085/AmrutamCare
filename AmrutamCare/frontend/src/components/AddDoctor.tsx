@@ -2,6 +2,7 @@ import { useState } from "react";
 
 const AddDoctor = () => {
   const [doctorId, setDoctorId] = useState("");
+  const [concernId, setConcernId] = useState("");
   const [username, setUsername] = useState("");
   const [message, setMessage] = useState("");
 
@@ -11,13 +12,13 @@ const AddDoctor = () => {
     const token = localStorage.getItem("token"); // admin’s JWT
 
     try {
-      const res = await fetch("http://localhost:5000/api/doctors", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/doctors`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ doctorId, username }),
+        body: JSON.stringify({ doctorId, username, concernId }),
       });
 
       const data = await res.json();
@@ -26,6 +27,7 @@ const AddDoctor = () => {
         setMessage("✅ Doctor added successfully!");
         setDoctorId("");
         setUsername("");
+        setConcernId("");
       } else {
         setMessage(`❌ ${data.message}`);
       }
@@ -51,6 +53,13 @@ const AddDoctor = () => {
           placeholder="Doctor Name"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          className=" border p-2 rounded"
+        />
+        <input
+          type="text"
+          placeholder="Concern ID"
+          value={concernId}
+          onChange={(e) => setConcernId(e.target.value)}
           className=" border p-2 rounded"
         />
         <button

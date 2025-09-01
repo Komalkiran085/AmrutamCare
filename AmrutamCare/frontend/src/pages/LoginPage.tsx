@@ -19,13 +19,13 @@ const LoginPage = ({ role }: LoginPageProps) => {
       let payload: Record<string, string> = {};
 
       if (role === "doctor") {
-        endpoint = "http://localhost:5000/api/doctors/login";
+        endpoint = `${import.meta.env.VITE_API_URL}/api/doctors/login`;
         payload = { doctorId: id, username };
       } else if (role === "patient") {
-        endpoint = "http://localhost:5000/api/patients/login";
+        endpoint = `${import.meta.env.VITE_API_URL}/api/patients/login`;
         payload = { patientId: id, username };
       } else if (role === "admin") {
-        endpoint = "http://localhost:5000/api/admins/login";
+        endpoint = `${import.meta.env.VITE_API_URL}/api/admins/login`;
         payload = { adminId: id, username };
       }
 

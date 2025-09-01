@@ -4,15 +4,14 @@ interface DoctorDaySlotsProps {
     date: Date;
     doctorId: string;
     onClose: () => void;
-    role?: "doctor" | "patient"; // new prop
+    role?: "doctor" | "patient"; 
 }
 
 const DoctorDaySlots = ({ date, doctorId, onClose, role }: DoctorDaySlotsProps) => {
     const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
     const [isVisible, setIsVisible] = useState(false);
-    // const hours = Array.from({ length: 24 }, (_, i) => i);
-     const hours = Array.from({ length: 10 }, (_, i) => i + 9);
-    const API_BASE = "http://localhost:5000/api/day-slots";
+    const hours = Array.from({ length: 10 }, (_, i) => i + 9);
+    const API_BASE = `${import.meta.env.VITE_API_URL}/api/day-slots`;
 
     const [bookedSlots, setBookedSlots] = useState<any[]>([]);
     const [dialogMessage, setDialogMessage] = useState<string | null>(null);
@@ -31,10 +30,10 @@ const DoctorDaySlots = ({ date, doctorId, onClose, role }: DoctorDaySlotsProps) 
             .catch((err) => console.error("Error fetching slots:", err));
 
         // 2. Fetch bookings for this doctor/date
-        fetch(`http://localhost:5000/api/bookings/doctor/${doctorId}/${ymd}`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/bookings/doctor/${doctorId}/${ymd}`)
             .then((res) => res.json())
             .then((data) => {
-                setBookedSlots(data); // [{hour, patientId, ...}, ...]
+                setBookedSlots(data); 
             })
             .catch((err) => console.error("Error fetching bookings:", err));
     }, [date, doctorId]);
@@ -63,11 +62,11 @@ const DoctorDaySlots = ({ date, doctorId, onClose, role }: DoctorDaySlotsProps) 
         })
             .then((res) => res.json())
             .then(() => {
-                alert("✅ Time slots Locked!");
-                handleClose();
+                setDialogMessage("✅ Time slots Locked!");
             })
             .catch((err) => console.error("Error saving slots:", err));
     };
+
 
     const handleClear = () => {
         const ymd = date.toISOString().split("T")[0];
@@ -77,7 +76,7 @@ const DoctorDaySlots = ({ date, doctorId, onClose, role }: DoctorDaySlotsProps) 
             .then((res) => res.json())
             .then(() => {
                 setSelectedSlots([]);
-                alert("🗑️ Time slots cleared!");
+                setDialogMessage("🗑️ Time slots cleared!");
             })
             .catch((err) => console.error("Error clearing slots:", err));
     };
@@ -98,11 +97,11 @@ const DoctorDaySlots = ({ date, doctorId, onClose, role }: DoctorDaySlotsProps) 
                     const isAvailable = selectedSlots.includes(hour);
                     const booking = bookedSlots.find((b) => b.hour === hour);
 
-                    let btnClass = "bg-gray-100 hover:bg-gray-200"; // default empty
+                    let btnClass = "bg-gray-100 hover:bg-gray-200";
                     if (booking) {
-                        btnClass = "bg-red-600 text-white"; // booked by patient
+                        btnClass = "bg-amber-600 text-white"; 
                     } else if (isAvailable) {
-                        btnClass = "bg-green-600 text-white"; // doctor available
+                        btnClass = "bg-green-600 text-white"; 
                     }
 
                     return (
@@ -156,20 +155,35 @@ const DoctorDaySlots = ({ date, doctorId, onClose, role }: DoctorDaySlotsProps) 
                 </div>
             )}
 
-            {/* Dialog Modal for Patient Info */}
+            {/* Dialog Modal for Info & Alerts */}
             {dialogMessage && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-[300px] text-center">
                         <p className="text-gray-800">{dialogMessage}</p>
-                        <button
-                            onClick={() => setDialogMessage(null)}
-                            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                        >
-                            Close
-                        </button>
+
+                        {dialogMessage.includes("Locked") ? (
+                            <button
+                                onClick={() => {
+                                    setDialogMessage(null);
+                                    handleClose(); 
+                                }}
+                                className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                            >
+                                OK
+                            </button>
+                        ) : (
+                            // Default Close button for other cases
+                            <button
+                                onClick={() => setDialogMessage(null)}
+                                className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-blue-700"
+                            >
+                                Close
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
+
         </div>
     );
 };

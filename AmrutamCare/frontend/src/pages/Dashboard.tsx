@@ -13,7 +13,7 @@ const Dashboard = () => {
 
     if (!role) return;
 
-    fetch(`http://localhost:5000/api/${role}s/me`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/${role}s/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
