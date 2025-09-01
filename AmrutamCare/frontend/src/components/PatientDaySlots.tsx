@@ -17,7 +17,6 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
   const [dialogType, setDialogType] = useState<"info" | "confirm" | "error">("info");
   const [pendingHour, setPendingHour] = useState<number | null>(null);
  const hours = Array.from({ length: 10 }, (_, i) => i + 9);
-  const API_BASE = `${import.meta.env.VITE_API_URL}/api/day-slots`;
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 10);
@@ -69,7 +68,7 @@ const PatientDaySlots = ({ date, doctorId, onClose }: PatientDaySlotsProps) => {
         }
         return res.json();
       })
-      .then((data) => {
+      .then(() => {
         setDialogMessage(
           `🎉 Appointment booked successfully at ${pendingHour}:00.`
         );
